@@ -1,0 +1,115 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default-deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isValidMessage(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.conversationId is string && data.conversationId.size() <= 128 &&
+             data.senderId == request.auth.uid &&
+             data.senderName is string && data.senderName.size() <= 100 &&
+             data.text is string && data.text.size() <= 5000 &&
+             data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    function isValidEvent(data) {
+      return data.id is string && data.id.size() <= 128 &&
+             data.title is string && data.title.size() <= 200 &&
+             data.description is string && data.description.size() <= 5000 &&
+             data.location is string && data.location.size() <= 300 &&
+             data.organizerId == request.auth.uid &&
+             data.organizerName is string && data.organizerName.size() <= 100 &&
+             data.createdAt is timestamp && data.createdAt <= request.time;
+    }
+
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId.size() <= 128 &&
+             data.fullName is string && data.fullName.size() >= 1 && data.fullName.size() <= 100 &&
+             data.nickname is string && data.nickname.size() <= 50 &&
+             (!('about' in data) || (data.about is string && data.about.size() <= 1000));
+    }
+
+    // Conversations / Messages
+    match /conversations/{conversationId}/messages/{messageId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+                       incoming().senderId == request.auth.uid &&
+                       isValidMessage(incoming());
+      allow update: if isSignedIn() &&
+                       existing().senderId == request.auth.uid &&
+                       incoming().senderId == existing().senderId &&
+                       isValidMessage(incoming());
+      allow delete: if isSignedIn() && existing().senderId == request.auth.uid;
+    }
+
+    // Clubhouse Events
+    match /events/{eventId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+                       incoming().organizerId == request.auth.uid &&
+                       isValidEvent(incoming());
+      allow update: if isSignedIn() && (
+                       (existing().organizerId == request.auth.uid && isValidEvent(incoming())) ||
+                       incoming().diff(existing()).affectedKeys().hasOnly(['goingCount', 'maybeCount'])
+                     );
+      allow delete: if isSignedIn() && existing().organizerId == request.auth.uid;
+    }
+
+    // Clubhouse Member Profiles & Badges Subcollection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() &&
+                       request.auth.uid == userId &&
+                       incoming().userId == request.auth.uid &&
+                       isValidUserProfile(incoming());
+      allow update: if isSignedIn() &&
+                       request.auth.uid == userId &&
+                       incoming().userId == existing().userId &&
+                       isValidUserProfile(incoming());
+      allow delete: if isSignedIn() && request.auth.uid == userId;
+
+      match /badges/{badgeDoc} {
+        allow read: if isSignedIn();
+        allow write: if isSignedIn() && request.auth.uid == userId;
+      }
+    }
+
+    // Real-Time Multiplayer Matches (Tic-Tac-Toe)
+    match /matches/{matchId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && incoming().playerXId == request.auth.uid;
+      allow update: if isSignedIn() && (
+        (existing().status == 'WAITING' && incoming().playerOId == request.auth.uid) ||
+        (existing().playerXId == request.auth.uid || existing().playerOId == request.auth.uid)
+      );
+      allow delete: if isSignedIn() && existing().playerXId == request.auth.uid;
+    }
+
+    // Shared Member Photo Gallery
+    match /photos/{photoId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && incoming().uploadedById == request.auth.uid;
+      allow update: if isSignedIn() && (
+        (existing().uploadedById == request.auth.uid) ||
+        // Members can like/unlike photos
+        incoming().diff(existing()).affectedKeys().hasOnly(['likesCount', 'likedByUids'])
+      );
+      allow delete: if isSignedIn() && existing().uploadedById == request.auth.uid;
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "Message": {
+      "title": "Message",
+      "description": "A chat message posted to a conversation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "conversationId": { "type": "string" },
+        "senderId": { "type": "string" },
+        "senderName": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "conversationId", "senderId", "senderName", "text", "createdAt"]
+    },
+    "ClubhouseEvent": {
+      "title": "ClubhouseEvent",
+      "description": "A meetup, trip, or event planned by gang members",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "location": { "type": "string" },
+        "dateTime": { "type": "string" },
+        "organizerId": { "type": "string" },
+        "organizerName": { "type": "string" },
+        "category": { "type": "string" },
+        "goingCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "description", "location", "organizerId", "organizerName", "createdAt"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Public and clubhouse credentials of a gang member",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "fullName": { "type": "string" },
+        "nickname": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "gender": { "type": "string" },
+        "dateOfBirth": { "type": "string" },
+        "calculatedAge": { "type": "integer" },
+        "about": { "type": "string" },
+        "avatarInitials": { "type": "string" },
+        "role": { "type": "string" },
+        "status": { "type": "string" },
+        "gamesPlayed": { "type": "integer" },
+        "gamesWon": { "type": "integer" },
+        "joinedDate": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "fullName", "nickname"]
+    },
+    "UserBadges": {
+      "title": "UserBadges",
+      "description": "Gaming and clubhouse achievements summary",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "totalBadgesUnlocked": { "type": "integer" },
+        "gangPoints": { "type": "integer" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId"]
+    },
+    "TicTacToeMatch": {
+      "title": "TicTacToeMatch",
+      "description": "Real-time multiplayer tic-tac-toe match state",
+      "type": "object",
+      "properties": {
+        "matchId": { "type": "string" },
+        "playerXId": { "type": "string" },
+        "playerXName": { "type": "string" },
+        "playerOId": { "type": "string" },
+        "playerOName": { "type": "string" },
+        "currentTurn": { "type": "string" },
+        "status": { "type": "string" },
+        "winnerId": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["matchId", "playerXId"]
+    },
+    "ClubhousePhoto": {
+      "title": "ClubhousePhoto",
+      "description": "Shared member memory photos in clubhouse vault",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "albumName": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "uploadedById": { "type": "string" },
+        "uploaderName": { "type": "string" },
+        "likesCount": { "type": "integer" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "imageUrl", "uploadedById", "uploaderName", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/conversations/{conversationId}/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Messages sent inside conversations"
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/ClubhouseEvent" },
+      "description": "Clubhouse events and trips"
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Clubhouse member profiles"
+    },
+    "/users/{userId}/badges/summary": {
+      "schema": { "$ref": "#/entities/UserBadges" },
+      "description": "Member achievement badges summary"
+    },
+    "/matches/{matchId}": {
+      "schema": { "$ref": "#/entities/TicTacToeMatch" },
+      "description": "Multiplayer gaming match rooms"
+    },
+    "/photos/{photoId}": {
+      "schema": { "$ref": "#/entities/ClubhousePhoto" },
+      "description": "Shared clubhouse memories and photos"
+    }
+  }
+}

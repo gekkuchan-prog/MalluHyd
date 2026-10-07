@@ -1,0 +1,33 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Outer shield / crest -->
+    <path
+        android:fillColor="#FFB703"
+        android:pathData="M54,20 C64,20 80,24 82,28 C82,54 70,72 54,84 C38,72 26,54 26,28 C28,24 44,20 54,20 Z" />
+    <!-- Inner contrasting crest -->
+    <path
+        android:fillColor="#023047"
+        android:pathData="M54,24 C62,24 76,27 78,31 C78,52 68,67 54,78 C40,67 30,52 30,31 C32,27 46,24 54,24 Z" />
+    <!-- Game Controller Silhouette in Gold/Emerald -->
+    <path
+        android:fillColor="#8ECAE6"
+        android:pathData="M43,40 L65,40 C70,40 73,43 72,48 L70,57 C69,61 66,63 62,61 L58,57 L50,57 L46,61 C42,63 39,61 38,57 L36,48 C35,43 38,40 43,40 Z" />
+    <!-- D-pad cross -->
+    <path
+        android:fillColor="#023047"
+        android:pathData="M44,45 L46,45 L46,47 L48,47 L48,49 L46,49 L46,51 L44,51 L44,49 L42,49 L42,47 L44,47 Z" />
+    <!-- Action buttons -->
+    <path
+        android:fillColor="#FB8500"
+        android:pathData="M63,46 A1.5,1.5 0 1,1 63,49 A1.5,1.5 0 1,1 63,45" />
+    <path
+        android:fillColor="#2EC4B6"
+        android:pathData="M66,49 A1.5,1.5 0 1,1 66,52 A1.5,1.5 0 1,1 66,48" />
+    <!-- Chat bubble above / crown element -->
+    <path
+        android:fillColor="#2EC4B6"
+        android:pathData="M54,30 C59,30 63,33 63,36 C63,39 59,41 55,41 L53,43 L53,41 C50,41 45,39 45,36 C45,33 49,30 54,30 Z" />
+</vector>

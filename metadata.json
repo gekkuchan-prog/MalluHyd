@@ -1,0 +1,6 @@
+{
+  "name": "Mallu Gang",
+  "description": "Private social & multiplayer gaming clubhouse with chats, events, expenses, moderation, and classic games.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
